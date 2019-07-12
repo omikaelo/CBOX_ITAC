@@ -565,7 +565,37 @@ namespace Itac4Lear
               }
             };
             bool flag = ItacFunctions.appendAttributeValues(CURRENT_SERIAL_NUMBER, SERIAL_NUMBER_POS, AttributeValue, out resultSting);
-            Logger.Log.Info((object)string.Format("AppendAttributeValue(): return with {0}", (object)flag));
+            Logger.Log.Info(string.Format("AppendAttributeValue(): return with {0}", flag));
+            return flag;
+        }
+
+        public static bool GetAttributeValues(int OBJECT_TYPE, string OBJECT_NUMBER, string OBJECT_DETAIL, string[] ATTRIBUTE_CODE_ARRAY, int ALL_MERGED_LEVEL, string[] ATTRIBUTE_RESULT_KEYS, out string[] ATTRIBUTE_RESULT_VALUES)
+        {
+            Logger.Log.Info("getAttributeValues(): function called.");
+            int result = 0;
+            ATTRIBUTE_RESULT_VALUES = null;
+            bool flag;
+            try
+            {
+                result = _imsapi.attribGetAttributeValues(_sessionContext, _stationNumber, OBJECT_TYPE, OBJECT_NUMBER, OBJECT_DETAIL, ATTRIBUTE_CODE_ARRAY, ALL_MERGED_LEVEL, ATTRIBUTE_RESULT_KEYS, out ATTRIBUTE_RESULT_VALUES);
+                if (result != 0)
+                {
+                    printErrorText(result);
+                    flag = false;
+                }
+                else
+                {
+                    Logger.Log.Info(string.Format("getAttributeValues(): OUTPUT_VECTOR = {0}", string.Join(" ,", ATTRIBUTE_RESULT_VALUES)));
+                    flag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                flag = false;
+                string str = ex.Source + " " + ex.Message;
+                Logger.Log.Fatal((object)str);
+            }
+            Logger.Log.Info(string.Format("getAttributeValues(): return with {0}", flag));
             return flag;
         }
 
